@@ -1,10 +1,14 @@
 import React, { useState } from "react";
+import Image from "next/image";
 
-//styles
-import styled, { css } from "styled-components";
+//components
 import { NavBar } from "./navbar";
 import { Input } from "@src/components/input";
 import { FaSearch } from "react-icons/fa";
+import { ThemeToogle } from "@src/components/themeToogle";
+
+//styles
+import styled, { css, useTheme } from "styled-components";
 
 interface ILayout {
   children: React.ReactNode;
@@ -12,9 +16,11 @@ interface ILayout {
 }
 
 export default function Layout({ children, toggleTheme }: ILayout) {
+  const { title } = useTheme();
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   return (
-    <LayoutContainer>
+    <LayoutContainer searchOpen={searchOpen}>
+      <div className='backgroundLayer' onClick={() => setSearchOpen(false)} />
       <div className='wrap'>
         <NavBar
           searchOpen={searchOpen}
@@ -29,6 +35,26 @@ export default function Layout({ children, toggleTheme }: ILayout) {
         </SearchContainer>
 
         <div className='content'>
+          <HeaderContainer>
+            {title === "dark" ? (
+              <Image
+                width={40}
+                height={40}
+                alt='logo'
+                src='/icon-logo-gray.png'
+                className='tablet'
+              />
+            ) : (
+              <Image
+                width={40}
+                height={40}
+                alt='logo'
+                src='/icon-logo-colors.png'
+                className='tablet'
+              />
+            )}
+            <ThemeToogle toggleTheme={toggleTheme} />
+          </HeaderContainer>
           {/* <div>
             <Header
               routers={routers.filter((router) => {
@@ -49,8 +75,22 @@ export default function Layout({ children, toggleTheme }: ILayout) {
   );
 }
 
-const LayoutContainer = styled.div`
+interface ILayoutContainer {
+  searchOpen: boolean;
+}
+
+const LayoutContainer = styled.div<ILayoutContainer>`
   position: relative;
+  .backgroundLayer {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 2;
+    left: 0;
+    transition: left 0.2s ease-in-out;
+  }
   .wrap {
     display: flex;
     position: relative;
@@ -60,14 +100,17 @@ const LayoutContainer = styled.div`
         min-height: 100vh;
         width: 100%;
         padding: 1rem;
-        max-width: 1200px;
+        max-width: 900px;
         margin: 0 auto;
       }
     }
   }
-  ${({ theme }) => css`
+  ${({ theme, searchOpen }) => css`
     .content {
       background-color: ${theme.colors.primary_90};
+    }
+    .backgroundLayer {
+      left: ${searchOpen ? "0" : "-100vw"};
     }
   `}
 
@@ -81,7 +124,24 @@ const LayoutContainer = styled.div`
     }
   }
 `;
-
+const HeaderContainer = styled.div`
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  height: 60px;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.03);
+  ${({ theme }) => css`
+    background-color: ${theme.colors.primary_100};
+  `}
+  @media (max-width: 450px) {
+    display: flex;
+  }
+`;
 interface ISearchContainer {
   isOpen: boolean;
 }
@@ -94,8 +154,9 @@ const SearchContainer = styled.div<ISearchContainer>`
   max-width: 450px;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
-  z-index: 1;
+  z-index: 2;
   transition: all 0.3s ease-in-out;
+
   .search-header {
     display: flex;
     flex-direction: column;

@@ -9,10 +9,12 @@ import {
   FaRegPaperPlane,
 } from "react-icons/fa";
 
-//styles
-import styled, { css } from "styled-components";
+//components
 import { Button } from "../button";
 import { UserPhoto } from "../userPhoto";
+
+//styles
+import styled, { css } from "styled-components";
 
 interface IContent {
   id: number;
@@ -20,16 +22,17 @@ interface IContent {
 }
 
 interface IData {
-  user: {
-    name: string;
-    subTitle: string;
-    photo: string;
-  };
+  id: number;
   description: string;
   content: IContent[];
   likes: number;
   comments: string[];
   date: Date;
+  user: {
+    name: string;
+    subTitle: string;
+    photo: string;
+  };
 }
 
 interface IPost {
@@ -39,7 +42,9 @@ interface IPost {
 export function Post({ data }: IPost) {
   const AMOUNT_OF_IMAGES = data?.content.length;
   const NUMBERS_OF_CONTENT_TO_SHOW = 1;
+
   const COTENT_WIDTH_REF: any = useRef(null);
+  const WINDOW_CONTENT: any = useRef(null);
 
   const [scrolledTimes, setScrolledTimes] = useState(0);
   const [liked, setLiked] = useState<boolean>(false);
@@ -74,7 +79,7 @@ export function Post({ data }: IPost) {
     }
 
     const windowContent = COTENT_WIDTH_REF?.current?.clientHeight;
-    const element = document.getElementById("images");
+    const element = document.getElementById(`images-${data?.id}`);
 
     element?.scrollTo({
       left: windowContent * newValue,
@@ -104,7 +109,7 @@ export function Post({ data }: IPost) {
           />
         )}
 
-        <div className='images' id='images'>
+        <div className='images' id={`images-${data?.id}`} ref={WINDOW_CONTENT}>
           {data?.content?.map((img) => {
             return <img key={img?.id} src={img?.url} ref={COTENT_WIDTH_REF} />;
           })}
@@ -139,16 +144,25 @@ export function Post({ data }: IPost) {
           <Button shape='icon' size='small' icon={<FaRegComment />} />
           <Button shape='icon' size='small' icon={<FaRegPaperPlane />} />
         </div>
-        <div className='likes'>
-          <Link href='/'>
-            <strong>{data?.user?.name}</strong>
-          </Link>
-          {data?.description && (
-            <small>
-              {data?.description} dlqwjb dwqdbwqkl bqdqw lqdb wqld bqwl
-              dbqwlkdqw boubqwd kljqbwd kjqwbd lqwbd qwlkjb qwlkjbdwlj{" "}
-            </small>
-          )}
+        <div className='likes-coments'>
+          <strong className='likes'>{data?.likes} likes</strong>
+          <div>
+            <Link href='/'>
+              <strong>{data?.user?.name}</strong>
+            </Link>
+            {data?.description && (
+              <small>
+                {data?.description} dlqwjb dwqdbwqkl bqdqw lqdb wqld bqwl
+                dbqwlkdqw boubqwd kljqbwd kjqwbd lqwbd qwlkjb qwlkjbdwlj test
+              </small>
+            )}
+          </div>
+          <small className='views-date comments'>
+            View all {data?.comments.length} comments
+          </small>
+          <small className='views-date'>
+            {data?.date.toLocaleDateString("en-GB")}
+          </small>
         </div>
       </div>
     </Container>
@@ -196,13 +210,13 @@ const Container = styled.div`
       display: flex;
       align-items: center;
       position: relative;
-      overflow-x: scroll;
+      overflow-x: hidden;
       height: 100%;
       ::-webkit-scrollbar {
         display: none;
       }
       img {
-        width: 101%;
+        width: 102%;
         height: auto;
       }
     }
@@ -237,17 +251,30 @@ const Container = styled.div`
         }
       }
     }
-    .likes {
+    .likes-coments {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
       margin-top: 1rem;
-      a {
-        decoration: none;
-        strong {
-          font-weight: bold;
-          cursor: pointer;
+      strong {
+        font-weight: bold;
+      }
+      div {
+        a {
+          decoration: none;
+          strong {
+            cursor: pointer;
+          }
+        }
+        small {
+          margin-left: 0.5rem;
         }
       }
-      small {
-        margin-left: 0.5rem;
+      .views-date {
+        font-weight: 300;
+      }
+      .comments {
+        cursor: pointer;
       }
     }
   }
@@ -271,10 +298,18 @@ const Container = styled.div`
           color: ${theme.colors.text_75};
         }
       }
-      .likes {
-        a,
-        small {
+      .likes-coments {
+        strong {
           color: ${theme.colors.text_100};
+        }
+        div {
+          a,
+          small {
+            color: ${theme.colors.text_100};
+          }
+        }
+        .views-date {
+          color: ${theme.colors.text_75};
         }
       }
     }

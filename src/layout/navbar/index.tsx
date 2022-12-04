@@ -10,6 +10,7 @@ import {
 
 //styles
 import styled, { css, useTheme } from "styled-components";
+import { ThemeToogle } from "@src/components/themeToogle";
 
 interface INavBar {
   searchOpen: boolean;
@@ -78,11 +79,7 @@ export function NavBar({ searchOpen, setSearchOpen, toggleTheme }: INavBar) {
         </li>
       </ul>
       <div className='theme'>
-        <ToogleButton onClick={toggleTheme}>
-          <FaSun className='sun' />
-          <Circle status={title === "light" ? true : false} />
-          <FaMoon className='moon' />
-        </ToogleButton>
+        <ThemeToogle toggleTheme={toggleTheme} />
       </div>
     </Container>
   );
@@ -96,12 +93,12 @@ const Container = styled.nav<IContainer>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 244px;
+  width: 280px;
   padding: 1rem;
   height: 100vh;
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 3;
   transition: all 0.2s ease-in-out;
   .logo-display {
     margin-top: 2rem;
@@ -158,7 +155,7 @@ const Container = styled.nav<IContainer>`
   }
 
   ${({ theme, isOpen }) => css`
-    width: ${isOpen ? "90px" : "244px"};
+    width: ${isOpen ? "90px" : "280px"};
     background: ${theme.colors.primary_100};
     border-right: 1px solid ${theme.colors.primary_75};
     .logo-display {
@@ -222,7 +219,7 @@ const Container = styled.nav<IContainer>`
   }
   @media (max-width: 450px) {
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     position: fixed;
     top: calc(100vh - 100px);
@@ -244,47 +241,11 @@ const Container = styled.nav<IContainer>`
       }
       li {
         margin: 0;
+        border-radius: 10px;
       }
     }
     .theme {
       display: none;
     }
   }
-`;
-interface IStatus {
-  status: boolean;
-}
-
-const ToogleButton = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 0 0.5rem;
-  position: relative;
-  align-items: center;
-  width: 60px;
-  height: 30px;
-  cursor: pointer;
-  border-radius: 15px;
-
-  ${({ theme }) => css`
-    background: ${theme.colors.primary_75};
-    .sun {
-      color: ${theme.colors.yellow_100};
-    }
-    .moon {
-      color: ${theme.colors.purple_100};
-    }
-  `}
-`;
-
-const Circle = styled.span<IStatus>`
-  width: 25px;
-  height: 25px;
-  border-radius: 15px;
-  position: absolute;
-  transition: all 0.2s ease-in-out;
-  ${({ theme, status }) => css`
-    background: ${theme.colors.primary_100};
-    left: ${status ? "4px" : "31px"};
-  `}
 `;

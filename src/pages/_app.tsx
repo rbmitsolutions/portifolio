@@ -7,7 +7,7 @@ import light from "@src/styles/theme/light";
 import { DefaultTheme, ThemeProvider } from "styled-components";
 
 export default function App({ Component, pageProps }: any): JSX.Element {
-  const [theme, setTheme] = useState<DefaultTheme>(dark);
+  const [theme, setTheme] = useState<DefaultTheme>(light);
   const Layout = Component.layout || (({ children }: any) => <>{children}</>);
 
   function toggleTheme() {

@@ -1,21 +1,8 @@
 import React, { useState } from "react";
-import Router from "next/router";
-import {
-  FaCamera,
-  FaFileUpload,
-  FaRegTrashAlt,
-  FaUserAlt,
-} from "react-icons/fa";
-import { toast } from "react-toastify";
+import { FaUserAlt } from "react-icons/fa";
 
 //styles
-import styled, { css, useTheme } from "styled-components";
-
-//components
-
-//services
-
-//hooks
+import styled, { css } from "styled-components";
 
 interface IUserPhoto {
   url?: string;
