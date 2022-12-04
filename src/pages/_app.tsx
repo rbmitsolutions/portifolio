@@ -19,6 +19,7 @@ export default function App({ Component, pageProps }: any): JSX.Element {
     //     maxAge: 30 * 60 * 24,
     //   }
     // );
+
     setTheme(theme.title === "light" ? dark : light);
   }
 
