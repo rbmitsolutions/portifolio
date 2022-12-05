@@ -1,28 +1,30 @@
 import React from "react";
 import Image from "next/image";
-import {
-  FaHome,
-  FaSearch,
-  FaRegPaperPlane,
-  FaSun,
-  FaMoon,
-} from "react-icons/fa";
+import { FaHome, FaSearch, FaRegPaperPlane } from "react-icons/fa";
+
+//components
+import { ThemeToogle } from "@src/components/themeToogle";
 
 //styles
 import styled, { css, useTheme } from "styled-components";
-import { ThemeToogle } from "@src/components/themeToogle";
 
 interface INavBar {
-  searchOpen: boolean;
-  setSearchOpen: (status: boolean) => void;
+  isMenuOpen: boolean;
+  isSearchOpen: boolean;
+  setIsSearchOpen: (status: boolean) => void;
   toggleTheme: () => void;
 }
 
-export function NavBar({ searchOpen, setSearchOpen, toggleTheme }: INavBar) {
+export function NavBar({
+  isSearchOpen,
+  setIsSearchOpen,
+  toggleTheme,
+  isMenuOpen,
+}: INavBar) {
   const { title } = useTheme();
 
   return (
-    <Container isOpen={searchOpen}>
+    <Container isSearchOpen={isSearchOpen} isMenuOpen={isMenuOpen}>
       <div className='logo-display'>
         {title === "dark" ? (
           <Image
@@ -65,7 +67,7 @@ export function NavBar({ searchOpen, setSearchOpen, toggleTheme }: INavBar) {
           <FaHome />
           <small>Home</small>
         </li>
-        <li className='search' onClick={() => setSearchOpen(!searchOpen)}>
+        <li className='search' onClick={() => setIsSearchOpen(!isSearchOpen)}>
           <FaSearch />
           <small>Search</small>
         </li>
@@ -86,7 +88,8 @@ export function NavBar({ searchOpen, setSearchOpen, toggleTheme }: INavBar) {
 }
 
 interface IContainer {
-  isOpen: boolean;
+  isSearchOpen: boolean;
+  isMenuOpen: boolean;
 }
 
 const Container = styled.nav<IContainer>`
@@ -154,21 +157,21 @@ const Container = styled.nav<IContainer>`
     bottom: 1rem;
   }
 
-  ${({ theme, isOpen }) => css`
-    width: ${isOpen ? "90px" : "280px"};
+  ${({ theme, isSearchOpen }) => css`
+    width: ${isSearchOpen ? "90px" : "280px"};
     background: ${theme.colors.primary_100};
     border-right: 1px solid ${theme.colors.primary_75};
     .logo-display {
       .web {
-        opacity: ${isOpen && "0"};
+        opacity: ${isSearchOpen && "0"};
       }
       .tablet {
-        opacity: ${isOpen && "1"};
+        opacity: ${isSearchOpen && "1"};
       }
     }
     ul {
       .search {
-        border: ${isOpen && `1px solid ${theme.colors.text_25}`};
+        border: ${isSearchOpen && `1px solid ${theme.colors.text_25}`};
       }
       li {
         background: ${theme.colors.primary_100};
@@ -179,10 +182,10 @@ const Container = styled.nav<IContainer>`
           color: ${theme.colors.text_50};
         }
         svg {
-          margin-right: ${isOpen && "0"};
+          margin-right: ${isSearchOpen && "0"};
         }
         small {
-          opacity: ${isOpen && "0"};
+          opacity: ${isSearchOpen && "0"};
         }
 
         :hover {
@@ -218,34 +221,37 @@ const Container = styled.nav<IContainer>`
     }
   }
   @media (max-width: 450px) {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
-    position: fixed;
-    top: calc(100vh - 100px);
-    width: 100%;
-    height: 100px;
-
-    .tablet {
-      display: none;
-    }
-    .logo-display {
-      display: none;
-    }
+    position: sticky;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 400px;
+    width: 0px;
+    overflow: hidden;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
     ul {
-      display: flex;
-      gap: 1rem;
-      margin: 0;
       .search {
         display: none;
       }
       li {
-        margin: 0;
-        border-radius: 10px;
+        align-items: center;
+        justify-content: flex-start;
+        svg {
+          position: relative;
+        }
       }
     }
-    .theme {
-      display: none;
-    }
+
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    ${({ theme, isMenuOpen }) => css`
+      border-right: 1px solid ${theme.colors.primary_75};
+      border-top: 1px solid ${theme.colors.primary_75};
+      border-bottom: 1px solid ${theme.colors.primary_75};
+      width: ${isMenuOpen ? "80px" : "0"};
+      padding: ${isMenuOpen ? "1rem" : "0"};
+      img {
+        display: ${isMenuOpen ? "block" : "none"};
+      }
+    `}
   }
 `;

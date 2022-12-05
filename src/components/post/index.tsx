@@ -20,19 +20,21 @@ interface IContent {
   id: number;
   url: string;
 }
+interface IUser {
+  id: number;
+  name: string;
+  user: string;
+  photo: string;
+}
 
 interface IData {
   id: number;
+  date: Date;
   description: string;
   content: IContent[];
   likes: number;
-  comments: string[];
-  date: Date;
-  user: {
-    name: string;
-    subTitle: string;
-    photo: string;
-  };
+  comments?: string[];
+  user: IUser;
 }
 
 interface IPost {
@@ -48,7 +50,6 @@ export function Post({ data }: IPost) {
 
   const [scrolledTimes, setScrolledTimes] = useState(0);
   const [liked, setLiked] = useState<boolean>(false);
-
   function fillHeart() {
     const heart = document.getElementById("heart-svg");
     const heartFilled = document.getElementById("heart-svg-filled");
@@ -95,11 +96,11 @@ export function Post({ data }: IPost) {
           size='small'
           url={data?.user?.photo}
           label={data?.user?.name}
-          smallLabel={data?.user?.subTitle}
+          smallLabel={data?.user?.user}
         />
       </div>
       <div className='content' id='content'>
-        {data?.content.length > 1 && (
+        {data?.content.length > 1 && scrolledTimes > 0 && (
           <Button
             className='left prev'
             shape='icon'
@@ -109,20 +110,22 @@ export function Post({ data }: IPost) {
           />
         )}
 
+        {data?.content.length > 1 &&
+          scrolledTimes < data?.content.length - 1 && (
+            <Button
+              className='right prev'
+              shape='icon'
+              icon={<FaArrowAltCircleRight />}
+              backgroundColor='transparent'
+              onClick={() => handleScrollImage(true)}
+            />
+          )}
+
         <div className='images' id={`images-${data?.id}`} ref={WINDOW_CONTENT}>
           {data?.content?.map((img) => {
             return <img key={img?.id} src={img?.url} ref={COTENT_WIDTH_REF} />;
           })}
         </div>
-        {data?.content.length > 1 && (
-          <Button
-            className='right prev'
-            shape='icon'
-            icon={<FaArrowAltCircleRight />}
-            backgroundColor='transparent'
-            onClick={() => handleScrollImage(true)}
-          />
-        )}
       </div>
       <div className='post-footer'>
         <div className='icons'>
@@ -141,24 +144,26 @@ export function Post({ data }: IPost) {
               icon={<FaHeart id='heart-svg-filled' className='' />}
             />
           </div>
+          {data?.content.length > 1 && (
+            <SliceContainer>
+              {data?.content?.map((x, index) => {
+                return (
+                  <SliceItem key={x.id} selected={index === scrolledTimes} />
+                );
+              })}
+            </SliceContainer>
+          )}
           <Button shape='icon' size='small' icon={<FaRegComment />} />
           <Button shape='icon' size='small' icon={<FaRegPaperPlane />} />
         </div>
         <div className='likes-coments'>
           <strong className='likes'>{data?.likes} likes</strong>
-          <div>
-            <Link href='/'>
-              <strong>{data?.user?.name}</strong>
-            </Link>
-            {data?.description && (
-              <small>
-                {data?.description} dlqwjb dwqdbwqkl bqdqw lqdb wqld bqwl
-                dbqwlkdqw boubqwd kljqbwd kjqwbd lqwbd qwlkjb qwlkjbdwlj test
-              </small>
-            )}
-          </div>
+          <strong>
+            <Link href='/'>{data?.user?.name}</Link>
+            {data?.description && <small>{data?.description}</small>}
+          </strong>
           <small className='views-date comments'>
-            View all {data?.comments.length} comments
+            View all {data?.comments?.length} comments
           </small>
           <small className='views-date'>
             {data?.date.toLocaleDateString("en-GB")}
@@ -192,9 +197,9 @@ const Container = styled.div`
       transform: translateY(-50%);
       cursor: pointer;
       z-index: 1;
-      color: white;
       opacity: 0.5;
       svg {
+        color: white;
         position: absolute;
         font-size: 2rem;
       }
@@ -226,10 +231,10 @@ const Container = styled.div`
     padding: 1rem;
     .icons {
       display: flex;
-      gap: 1rem;
+      gap: 0.5rem;
       svg {
         position: absolute;
-        font-size: 1.6rem;
+        font-size: 1.2rem;
       }
       .heart-container {
         position: relative;
@@ -239,7 +244,7 @@ const Container = styled.div`
           padding: 0;
           svg {
             position: absolute;
-            font-size: 1.6rem;
+            font-size: 1.2rem;
           }
           #heart-svg {
             opacity: 1;
@@ -255,16 +260,12 @@ const Container = styled.div`
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
-      margin-top: 1rem;
+      margin-top: 0.5rem;
       strong {
         font-weight: bold;
-      }
-      div {
+        cursor: pointer;
         a {
           decoration: none;
-          strong {
-            cursor: pointer;
-          }
         }
         small {
           margin-left: 0.5rem;
@@ -301,8 +302,6 @@ const Container = styled.div`
       .likes-coments {
         strong {
           color: ${theme.colors.text_100};
-        }
-        div {
           a,
           small {
             color: ${theme.colors.text_100};
@@ -317,7 +316,7 @@ const Container = styled.div`
 
   @keyframes liked {
     0% {
-      font-size: 1.6rem;
+      font-size: 1.2rem;
     }
     50% {
       font-size: 1.9rem;
@@ -329,14 +328,14 @@ const Container = styled.div`
   @keyframes liked-filled {
     0% {
       opacity: 0;
-      font-size: 1.6rem;
+      font-size: 1.2rem;
     }
 
     25% {
       font-size: 2.5rem;
     }
     50% {
-      font-size: 1.4rem;
+      font-size: 1.2rem;
     }
 
     100% {
@@ -344,4 +343,39 @@ const Container = styled.div`
       font-size: 1.7rem;
     }
   }
+`;
+
+const SliceContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: 0.3rem;
+  padding: 0.5rem;
+  /* width: 70px; */
+  height: 20px;
+  z-index: 1;
+  border-radius: 20px;
+
+  ${({ theme }) => css`
+    background: ${theme.colors.primary_75};
+  `}
+`;
+
+interface ISliceItem {
+  selected: boolean;
+}
+
+const SliceItem = styled.div<ISliceItem>`
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  transition: all 0.5s ease-in-out;
+  ${({ theme, selected }) => css`
+    background: ${selected
+      ? theme.colors.logo_100
+      : "rgba(255, 255, 255, 0.616)"};
+  `}
 `;

@@ -24,7 +24,7 @@ export function Button({
   icon,
   size = "normal",
   disabled,
-  color = "black",
+  color,
   maxWidth,
   backgroundColor = "transparent",
   ...props
@@ -142,7 +142,7 @@ export function Button({
 
 interface IButtonStyle {
   maxWidth?: string;
-  color: string;
+  color?: string;
   backgroundColor?: string;
 }
 
@@ -178,13 +178,16 @@ const ButtonStyle = styled.button<IButtonStyle>`
     background-color: ${backgroundColor
       ? backgroundColor
       : theme.colors.primary_100};
-    color: ${color ? color : "white"};
+    color: ${color ? color : theme.colors.logo_100};
     max-width: ${maxWidth};
+    svg {
+      color: ${color ? color : theme.colors.logo_100};
+    }
   `}
 `;
 interface IIconButtonStyle {
-  backgroundColor: string;
-  color: string;
+  backgroundColor?: string;
+  color?: string;
 }
 
 const IconButtonStyle = styled.button<IIconButtonStyle>`
@@ -217,6 +220,13 @@ const IconButtonStyle = styled.button<IIconButtonStyle>`
     background-color: ${backgroundColor
       ? backgroundColor
       : theme.colors.primary_100};
-    color: ${color ? color : backgroundColor ? theme.colors.text_100 : "white"};
+    color: ${color
+      ? color
+      : backgroundColor
+      ? theme.colors.text_100
+      : theme.colors.primary_100};
+    svg {
+      color: ${color ? color : theme.colors.text_100};
+    }
   `}
 `;

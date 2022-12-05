@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import Image from "next/image";
 
 //components
+import { Button } from "@src/components/button";
 import { NavBar } from "./navbar";
 import { Input } from "@src/components/input";
-import { FaSearch } from "react-icons/fa";
-import { ThemeToogle } from "@src/components/themeToogle";
+import { FaBars, FaSearch } from "react-icons/fa";
 
 //styles
 import styled, { css, useTheme } from "styled-components";
-
 interface ILayout {
   children: React.ReactNode;
   toggleTheme: () => void;
@@ -17,17 +16,49 @@ interface ILayout {
 
 export default function Layout({ children, toggleTheme }: ILayout) {
   const { title } = useTheme();
-  const [searchOpen, setSearchOpen] = useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
+  function closeLayer() {
+    setIsMenuOpen(false);
+    setIsSearchOpen(false);
+  }
+
   return (
-    <LayoutContainer searchOpen={searchOpen}>
-      <div className='backgroundLayer' onClick={() => setSearchOpen(false)} />
+    <LayoutContainer isSearchOpen={isSearchOpen} isMenuOpen={isMenuOpen}>
+      <HeaderContainer>
+        <Button
+          icon={<FaBars />}
+          shape='icon'
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        />
+
+        {title === "dark" ? (
+          <Image
+            width={40}
+            height={40}
+            alt='logo'
+            src='/icon-logo-gray.png'
+            className='tablet'
+          />
+        ) : (
+          <Image
+            width={40}
+            height={40}
+            alt='logo'
+            src='/icon-logo-colors.png'
+            className='tablet'
+          />
+        )}
+      </HeaderContainer>
+      <div className='backgroundLayer' onClick={() => closeLayer()} />
       <div className='wrap'>
         <NavBar
-          searchOpen={searchOpen}
-          setSearchOpen={setSearchOpen}
+          isSearchOpen={isSearchOpen}
+          setIsSearchOpen={setIsSearchOpen}
           toggleTheme={toggleTheme}
+          isMenuOpen={isMenuOpen}
         />
-        <SearchContainer isOpen={searchOpen}>
+        <SearchContainer isOpen={isSearchOpen}>
           <div className='search-header'>
             <h2>Search</h2>
             <Input placeholder='Search' icon={<FaSearch />} />
@@ -35,26 +66,6 @@ export default function Layout({ children, toggleTheme }: ILayout) {
         </SearchContainer>
 
         <div className='content'>
-          <HeaderContainer>
-            {title === "dark" ? (
-              <Image
-                width={40}
-                height={40}
-                alt='logo'
-                src='/icon-logo-gray.png'
-                className='tablet'
-              />
-            ) : (
-              <Image
-                width={40}
-                height={40}
-                alt='logo'
-                src='/icon-logo-colors.png'
-                className='tablet'
-              />
-            )}
-            <ThemeToogle toggleTheme={toggleTheme} />
-          </HeaderContainer>
           {/* <div>
             <Header
               routers={routers.filter((router) => {
@@ -76,7 +87,8 @@ export default function Layout({ children, toggleTheme }: ILayout) {
 }
 
 interface ILayoutContainer {
-  searchOpen: boolean;
+  isSearchOpen: boolean;
+  isMenuOpen: boolean;
 }
 
 const LayoutContainer = styled.div<ILayoutContainer>`
@@ -89,13 +101,14 @@ const LayoutContainer = styled.div<ILayoutContainer>`
     background: rgba(0, 0, 0, 0.1);
     z-index: 2;
     left: 0;
-    transition: left 0.2s ease-in-out;
+    transition: left 0.1s ease-in-out;
   }
   .wrap {
     display: flex;
     position: relative;
     .content {
       flex: 1;
+      overflow: hidden;
       .page {
         min-height: 100vh;
         width: 100%;
@@ -105,22 +118,21 @@ const LayoutContainer = styled.div<ILayoutContainer>`
       }
     }
   }
-  ${({ theme, searchOpen }) => css`
+  ${({ theme, isSearchOpen, isMenuOpen }) => css`
     .content {
       background-color: ${theme.colors.primary_90};
     }
     .backgroundLayer {
-      left: ${searchOpen ? "0" : "-100vw"};
+      left: ${isSearchOpen || isMenuOpen ? "0" : "-100vw"};
     }
   `}
 
   @media (max-width: 450px) {
     .wrap {
-      .content {
-        .page {
-          padding-bottom: 120px;
-        }
-      }
+      /* position: static; */
+      ${({ theme }) => css`
+        background-color: ${theme.colors.primary_90};
+      `}
     }
   }
 `;
