@@ -80,7 +80,7 @@ export function Post({ data }: IPost) {
     const element = document.getElementById(`post-images-${data?.id}`);
     console.log(windowContent * newValue);
     element?.scrollTo({
-      left: 450 * newValue,
+      left: 450,
       behavior: "smooth",
     });
     setScrolledTimes(newValue);
