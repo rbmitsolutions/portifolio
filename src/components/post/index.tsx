@@ -43,7 +43,7 @@ export function Post({ data }: IPost) {
   const AMOUNT_OF_IMAGES = data?.content.length;
   const NUMBERS_OF_CONTENT_TO_SHOW = 1;
 
-  const COTENT_WIDTH_REF: any = useRef(null);
+  const COTENT_WIDTH_REF: any = useRef();
 
   const [scrolledTimes, setScrolledTimes] = useState(0);
   const [liked, setLiked] = useState<boolean>(false);
@@ -76,7 +76,7 @@ export function Post({ data }: IPost) {
       newValue = 0;
     }
 
-    const windowContent = COTENT_WIDTH_REF?.current?.clientHeight;
+    const windowContent = COTENT_WIDTH_REF?.current?.clientWidth;
     const element = document.getElementById(`post-images-${data?.id}`);
 
     element?.scrollTo({
@@ -87,7 +87,7 @@ export function Post({ data }: IPost) {
   };
 
   return (
-    <Container>
+    <Container ref={COTENT_WIDTH_REF}>
       <div className='post-header'>
         <UserPhoto
           size='small'
@@ -114,14 +114,7 @@ export function Post({ data }: IPost) {
 
         <div className='post-images' id={`post-images-${data?.id}`}>
           {data?.content?.map((img) => {
-            return (
-              <img
-                key={img?.id}
-                src={img?.url}
-                ref={COTENT_WIDTH_REF}
-                id='post-image-content'
-              />
-            );
+            return <img key={img?.id} src={img?.url} id='post-image-content' />;
           })}
         </div>
       </div>
@@ -213,7 +206,7 @@ const Container = styled.div`
         display: none;
       }
       #post-image-content {
-        width: 102%;
+        width: 100%;
         height: auto;
       }
     }
