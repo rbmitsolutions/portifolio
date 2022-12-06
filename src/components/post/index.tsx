@@ -43,9 +43,9 @@ export function Post({ data }: IPost) {
   const AMOUNT_OF_IMAGES = data?.content.length;
   const NUMBERS_OF_CONTENT_TO_SHOW = 1;
 
-  const COTENT_WIDTH_REF: any = useRef();
+  const COTENT_WIDTH_REF: any = useRef(null);
 
-  // const [scrolledTimes, setScrolledTimes] = useState(0);
+  const [scrolledTimes, setScrolledTimes] = useState(0);
   const [liked, setLiked] = useState<boolean>(false);
   function fillHeart() {
     const heart = document.getElementById("heart-svg");
@@ -61,30 +61,33 @@ export function Post({ data }: IPost) {
     }
   }
 
-  function handleScrollImage(isNext: boolean) {
+  const handleScrollImage = (isNext: boolean) => {
     const amountToScroll = isNext ? 1 : -1;
-    let newValue = amountToScroll;
+    let newValue = amountToScroll + scrolledTimes;
 
-    // if (newValue > AMOUNT_OF_IMAGES - NUMBERS_OF_CONTENT_TO_SHOW) {
-    //   newValue = AMOUNT_OF_IMAGES - NUMBERS_OF_CONTENT_TO_SHOW;
-    // }
+    // Verify if it can still scroll
+    // "NUMBERS_OF_CONTENT_TO_SHOW" is the number of dates that we show to user
 
-    // if (newValue < 0) {
-    //   newValue = 0;
-    // }
-    // setScrolledTimes(newValue);
+    if (newValue > AMOUNT_OF_IMAGES - NUMBERS_OF_CONTENT_TO_SHOW) {
+      newValue = AMOUNT_OF_IMAGES - NUMBERS_OF_CONTENT_TO_SHOW;
+    }
 
-    const windowContent = COTENT_WIDTH_REF?.current?.clientWidth;
+    if (newValue < 0) {
+      newValue = 0;
+    }
+
+    const windowContent = COTENT_WIDTH_REF?.current?.clientHeight;
     const element = document.getElementById(`post-images-${data?.id}`);
-    console.log(newValue);
+
     element?.scrollTo({
       left: windowContent * newValue,
       behavior: "smooth",
     });
-  }
+    setScrolledTimes(newValue);
+  };
 
   return (
-    <Container ref={COTENT_WIDTH_REF}>
+    <Container>
       <div className='post-header'>
         <UserPhoto
           size='small'
@@ -94,16 +97,7 @@ export function Post({ data }: IPost) {
         />
       </div>
       <div className='post-content' id='post-content'>
-        <div
-          className='left-container'
-          onClick={() => handleScrollImage(false)}
-        />
-
-        <div
-          className='right-container'
-          onClick={() => handleScrollImage(true)}
-        />
-        {/* {data?.content.length > 1 && scrolledTimes > 0 && (
+        {data?.content.length > 1 && scrolledTimes > 0 && (
           <div
             className='left-container'
             onClick={() => handleScrollImage(false)}
@@ -116,11 +110,18 @@ export function Post({ data }: IPost) {
               className='right-container'
               onClick={() => handleScrollImage(true)}
             />
-          )} */}
+          )}
 
         <div className='post-images' id={`post-images-${data?.id}`}>
           {data?.content?.map((img) => {
-            return <img key={img?.id} src={img?.url} id='post-image-content' />;
+            return (
+              <img
+                key={img?.id}
+                src={img?.url}
+                ref={COTENT_WIDTH_REF}
+                id='post-image-content'
+              />
+            );
           })}
         </div>
       </div>
@@ -141,7 +142,7 @@ export function Post({ data }: IPost) {
               icon={<FaHeart id='heart-svg-filled' className='' />}
             />
           </div>
-          {/* {data?.content.length > 1 && (
+          {data?.content.length > 1 && (
             <SliceContainer>
               {data?.content?.map((x, index) => {
                 return (
@@ -149,7 +150,7 @@ export function Post({ data }: IPost) {
                 );
               })}
             </SliceContainer>
-          )} */}
+          )}
           <Button shape='icon' size='small' icon={<FaRegComment />} />
           <Button shape='icon' size='small' icon={<FaRegPaperPlane />} />
         </div>
@@ -195,6 +196,9 @@ const Container = styled.div`
       width: 30%;
       z-index: 3;
       cursor: pointer;
+      @media (max-width:450px) {
+        display: none;
+      }
     }
     .left-container {
       left: 0;
@@ -206,14 +210,18 @@ const Container = styled.div`
     .post-images {
       display: flex;
       position: relative;
-      overflow-x: hidden;
-      height: 100%;
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory !important;
       ::-webkit-scrollbar {
         display: none;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: blue;
       }
       #post-image-content {
         width: 100%;
         height: auto;
+        scroll-snap-align: start;
       }
     }
   }
