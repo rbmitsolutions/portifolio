@@ -45,7 +45,7 @@ export function Post({ data }: IPost) {
 
   const COTENT_WIDTH_REF: any = useRef();
 
-  const [scrolledTimes, setScrolledTimes] = useState(0);
+  // const [scrolledTimes, setScrolledTimes] = useState(0);
   const [liked, setLiked] = useState<boolean>(false);
   function fillHeart() {
     const heart = document.getElementById("heart-svg");
@@ -61,30 +61,27 @@ export function Post({ data }: IPost) {
     }
   }
 
-  const handleScrollImage = (isNext: boolean) => {
+  function handleScrollImage(isNext: boolean) {
     const amountToScroll = isNext ? 1 : -1;
-    let newValue = amountToScroll + scrolledTimes;
+    let newValue = amountToScroll;
 
-    // Verify if it can still scroll
-    // "NUMBERS_OF_CONTENT_TO_SHOW" is the number of dates that we show to user
+    // if (newValue > AMOUNT_OF_IMAGES - NUMBERS_OF_CONTENT_TO_SHOW) {
+    //   newValue = AMOUNT_OF_IMAGES - NUMBERS_OF_CONTENT_TO_SHOW;
+    // }
 
-    if (newValue > AMOUNT_OF_IMAGES - NUMBERS_OF_CONTENT_TO_SHOW) {
-      newValue = AMOUNT_OF_IMAGES - NUMBERS_OF_CONTENT_TO_SHOW;
-    }
-
-    if (newValue < 0) {
-      newValue = 0;
-    }
+    // if (newValue < 0) {
+    //   newValue = 0;
+    // }
+    // setScrolledTimes(newValue);
 
     const windowContent = COTENT_WIDTH_REF?.current?.clientWidth;
     const element = document.getElementById(`post-images-${data?.id}`);
-    console.log(windowContent * newValue);
+    console.log(newValue);
     element?.scrollTo({
-      left: 450,
+      left: windowContent * newValue,
       behavior: "smooth",
     });
-    setScrolledTimes(newValue);
-  };
+  }
 
   return (
     <Container ref={COTENT_WIDTH_REF}>
@@ -97,7 +94,16 @@ export function Post({ data }: IPost) {
         />
       </div>
       <div className='post-content' id='post-content'>
-        {data?.content.length > 1 && scrolledTimes > 0 && (
+        <div
+          className='left-container'
+          onClick={() => handleScrollImage(false)}
+        />
+
+        <div
+          className='right-container'
+          onClick={() => handleScrollImage(true)}
+        />
+        {/* {data?.content.length > 1 && scrolledTimes > 0 && (
           <div
             className='left-container'
             onClick={() => handleScrollImage(false)}
@@ -110,7 +116,7 @@ export function Post({ data }: IPost) {
               className='right-container'
               onClick={() => handleScrollImage(true)}
             />
-          )}
+          )} */}
 
         <div className='post-images' id={`post-images-${data?.id}`}>
           {data?.content?.map((img) => {
@@ -135,7 +141,7 @@ export function Post({ data }: IPost) {
               icon={<FaHeart id='heart-svg-filled' className='' />}
             />
           </div>
-          {data?.content.length > 1 && (
+          {/* {data?.content.length > 1 && (
             <SliceContainer>
               {data?.content?.map((x, index) => {
                 return (
@@ -143,7 +149,7 @@ export function Post({ data }: IPost) {
                 );
               })}
             </SliceContainer>
-          )}
+          )} */}
           <Button shape='icon' size='small' icon={<FaRegComment />} />
           <Button shape='icon' size='small' icon={<FaRegPaperPlane />} />
         </div>
