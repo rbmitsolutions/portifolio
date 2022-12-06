@@ -99,7 +99,7 @@ export function Post({ data }: IPost) {
           smallLabel={data?.user?.user}
         />
       </div>
-      <div className='content' id='content'>
+      <div className='post-content' id='post-content'>
         {data?.content.length > 1 && scrolledTimes > 0 && (
           <Button
             className='left prev'
@@ -184,7 +184,7 @@ const Container = styled.div`
     padding: 1rem;
   }
 
-  .content {
+  .post-content {
     position: relative;
     max-height: 500px;
     max-width: 470px;
@@ -290,7 +290,7 @@ const Container = styled.div`
   ${({ theme }) => css`
     background: ${theme.colors.primary_100};
     border: 1px solid ${theme.colors.primary_75};
-    .content {
+    .post-content {
       background-color: ${theme.colors.primary_0};
     }
     .post-footer {
