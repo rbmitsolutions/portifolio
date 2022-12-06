@@ -78,9 +78,9 @@ export function Post({ data }: IPost) {
 
     const windowContent = COTENT_WIDTH_REF?.current?.clientWidth;
     const element = document.getElementById(`post-images-${data?.id}`);
-
+    console.log(windowContent * newValue);
     element?.scrollTo({
-      left: windowContent * newValue,
+      left: 450 * newValue,
       behavior: "smooth",
     });
     setScrolledTimes(newValue);
