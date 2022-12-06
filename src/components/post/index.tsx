@@ -1,8 +1,6 @@
 import React, { useRef, useState } from "react";
 import Link from "next/link";
 import {
-  FaArrowAltCircleLeft,
-  FaArrowAltCircleRight,
   FaHeart,
   FaRegComment,
   FaRegHeart,
@@ -46,7 +44,6 @@ export function Post({ data }: IPost) {
   const NUMBERS_OF_CONTENT_TO_SHOW = 1;
 
   const COTENT_WIDTH_REF: any = useRef(null);
-  const WINDOW_CONTENT: any = useRef(null);
 
   const [scrolledTimes, setScrolledTimes] = useState(0);
   const [liked, setLiked] = useState<boolean>(false);
@@ -80,7 +77,7 @@ export function Post({ data }: IPost) {
     }
 
     const windowContent = COTENT_WIDTH_REF?.current?.clientHeight;
-    const element = document.getElementById(`images-${data?.id}`);
+    const element = document.getElementById(`post-images-${data?.id}`);
 
     element?.scrollTo({
       left: windowContent * newValue,
@@ -101,29 +98,30 @@ export function Post({ data }: IPost) {
       </div>
       <div className='post-content' id='post-content'>
         {data?.content.length > 1 && scrolledTimes > 0 && (
-          <Button
-            className='left prev'
-            shape='icon'
-            icon={<FaArrowAltCircleLeft />}
-            backgroundColor='transparent'
+          <div
+            className='left-container'
             onClick={() => handleScrollImage(false)}
           />
         )}
 
         {data?.content.length > 1 &&
           scrolledTimes < data?.content.length - 1 && (
-            <Button
-              className='right prev'
-              shape='icon'
-              icon={<FaArrowAltCircleRight />}
-              backgroundColor='transparent'
+            <div
+              className='right-container'
               onClick={() => handleScrollImage(true)}
             />
           )}
 
-        <div className='images' id={`images-${data?.id}`} ref={WINDOW_CONTENT}>
+        <div className='post-images' id={`post-images-${data?.id}`}>
           {data?.content?.map((img) => {
-            return <img key={img?.id} src={img?.url} ref={COTENT_WIDTH_REF} />;
+            return (
+              <img
+                key={img?.id}
+                src={img?.url}
+                ref={COTENT_WIDTH_REF}
+                id='post-image-content'
+              />
+            );
           })}
         </div>
       </div>
@@ -189,38 +187,32 @@ const Container = styled.div`
     max-height: 500px;
     max-width: 470px;
 
-    .left,
-    .right {
+    .left-container,
+    .right-container {
       position: absolute;
-      font-size: 2rem;
-      top: 50%;
-      transform: translateY(-50%);
+      content: ' ',
       cursor: pointer;
-      z-index: 1;
-      opacity: 0.5;
-      svg {
-        color: white;
-        position: absolute;
-        font-size: 2rem;
-      }
+      height: 100%;
+      width: 30%;
+      z-index: 3;
+      cursor: pointer;
     }
-    .left {
-      left: 0.5rem;
+    .left-container {
+      left: 0;
     }
-    .right {
-      right: 0.5rem;
+    .right-container {
+      right: 0;
     }
 
-    .images {
+    .post-images {
       display: flex;
-      align-items: center;
       position: relative;
       overflow-x: hidden;
       height: 100%;
       ::-webkit-scrollbar {
         display: none;
       }
-      img {
+      #post-image-content {
         width: 102%;
         height: auto;
       }
@@ -231,6 +223,7 @@ const Container = styled.div`
     padding: 1rem;
     .icons {
       display: flex;
+      position: relative;
       gap: 0.5rem;
       svg {
         position: absolute;
@@ -350,8 +343,7 @@ const SliceContainer = styled.div`
   align-items: center;
   justify-content: center;
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  right: 0;
   gap: 0.3rem;
   padding: 0.5rem;
   /* width: 70px; */
