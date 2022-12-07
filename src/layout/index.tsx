@@ -34,18 +34,18 @@ export default function Layout({ children, toggleTheme }: ILayout) {
 
         {title === "dark" ? (
           <Image
-            width={40}
+            width={100}
             height={40}
             alt='logo'
-            src='/icon-logo-gray.png'
+            src='/rbm-gray.png'
             className='tablet'
           />
         ) : (
           <Image
-            width={40}
+            width={100}
             height={40}
             alt='logo'
-            src='/icon-logo-colors.png'
+            src='/rbm-colors.png'
             className='tablet'
           />
         )}
@@ -129,7 +129,6 @@ const LayoutContainer = styled.div<ILayoutContainer>`
 
   @media (max-width: 450px) {
     .wrap {
-      /* position: static; */
       ${({ theme }) => css`
         background-color: ${theme.colors.primary_90};
       `}
@@ -140,13 +139,14 @@ const HeaderContainer = styled.div`
   display: none;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 1rem 2rem;
   height: 60px;
   width: 100%;
   position: sticky;
   top: 0;
   z-index: 2;
   box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.03);
+
   ${({ theme }) => css`
     background-color: ${theme.colors.primary_100};
   `}
