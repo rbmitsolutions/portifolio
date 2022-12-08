@@ -2,7 +2,7 @@ import React from "react";
 import Modal from "react-modal";
 
 //styles
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 interface ICustomModal {
   isModalOpen: boolean;
@@ -47,6 +47,4 @@ export function CustomModal({
 
 const Content = styled.div`
   z-index: 1000;
-  max-height: 85vh;
-  background-color: transparent;
 `;

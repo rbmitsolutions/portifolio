@@ -26,7 +26,7 @@ export default function Home() {
     <Container>
       <MainContainer>
         <StoriesContainer>
-          {/* <StoryDisplay
+          <StoryDisplay
             data={{
               id: 1,
               stories: [
@@ -52,7 +52,7 @@ export default function Home() {
                 photo: "/raphael-foto.jpg",
               },
             }}
-          /> */}
+          />
         </StoriesContainer>
         {static_posts.map((post) => {
           return <Post key={post?.id} data={post} />;

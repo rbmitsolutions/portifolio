@@ -221,37 +221,6 @@ const Container = styled.nav<IContainer>`
     }
   }
   @media (max-width: 450px) {
-    position: sticky;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 400px;
-    width: 0px;
-    overflow: hidden;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
-    ul {
-      .search {
-        display: none;
-      }
-      li {
-        align-items: center;
-        justify-content: flex-start;
-        svg {
-          position: relative;
-        }
-      }
-    }
-
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    ${({ theme, isMenuOpen }) => css`
-      border-right: 1px solid ${theme.colors.primary_75};
-      border-top: 1px solid ${theme.colors.primary_75};
-      border-bottom: 1px solid ${theme.colors.primary_75};
-      width: ${isMenuOpen ? "80px" : "0"};
-      padding: ${isMenuOpen ? "1rem" : "0"};
-      img {
-        display: ${isMenuOpen ? "block" : "none"};
-      }
-    `}
+    display: none;
   }
 `;

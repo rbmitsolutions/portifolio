@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 //components
 import { Button } from "@src/components/button";
 import { NavBar } from "./navbar";
 import { Input } from "@src/components/input";
-import { FaBars, FaSearch } from "react-icons/fa";
+import { FaBars, FaHome, FaRegPaperPlane, FaSearch } from "react-icons/fa";
 
 //styles
 import styled, { css, useTheme } from "styled-components";
+import { ThemeToogle } from "@src/components/themeToogle";
 interface ILayout {
   children: React.ReactNode;
   toggleTheme: () => void;
@@ -23,6 +24,12 @@ export default function Layout({ children, toggleTheme }: ILayout) {
     setIsSearchOpen(false);
   }
 
+  const changeColor = () => {};
+
+  useEffect(() => {
+    window.addEventListener("scroll", changeColor);
+  }, []);
+
   return (
     <LayoutContainer isSearchOpen={isSearchOpen} isMenuOpen={isMenuOpen}>
       <HeaderContainer>
@@ -34,23 +41,39 @@ export default function Layout({ children, toggleTheme }: ILayout) {
 
         {title === "dark" ? (
           <Image
-            width={100}
+            width={40}
             height={40}
             alt='logo'
-            src='/rbm-gray.png'
+            src='/icon-logo-gray.png'
             className='tablet'
           />
         ) : (
           <Image
-            width={100}
+            width={40}
             height={40}
             alt='logo'
-            src='/rbm-colors.png'
+            src='/icon-logo-colors.png'
             className='tablet'
           />
         )}
       </HeaderContainer>
       <div className='backgroundLayer' onClick={() => closeLayer()} />
+      <NavBarSmallScreen isMenuOpen={isMenuOpen}>
+        <ul>
+          <li>
+            <FaHome />
+          </li>
+          <li className='search' onClick={() => setIsSearchOpen(!isSearchOpen)}>
+            <FaSearch />
+          </li>
+          <li>
+            <FaRegPaperPlane />
+          </li>
+        </ul>
+        <div className='toogle-theme-button'>
+          <ThemeToogle toggleTheme={toggleTheme} />
+        </div>
+      </NavBarSmallScreen>
       <div className='wrap'>
         <NavBar
           isSearchOpen={isSearchOpen}
@@ -119,6 +142,7 @@ const LayoutContainer = styled.div<ILayoutContainer>`
     }
   }
   ${({ theme, isSearchOpen, isMenuOpen }) => css`
+    background-color: ${theme.colors.primary_90};
     .content {
       background-color: ${theme.colors.primary_90};
     }
@@ -129,6 +153,7 @@ const LayoutContainer = styled.div<ILayoutContainer>`
 
   @media (max-width: 450px) {
     .wrap {
+      flex-direction: row-reverse;
       ${({ theme }) => css`
         background-color: ${theme.colors.primary_90};
       `}
@@ -139,13 +164,13 @@ const HeaderContainer = styled.div`
   display: none;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 2rem;
+  padding: 1rem 2rem 1rem 0.5rem;
   height: 60px;
   width: 100%;
   position: sticky;
   top: 0;
-  z-index: 2;
-  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.03);
+  z-index: 4;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.05);
 
   ${({ theme }) => css`
     background-color: ${theme.colors.primary_100};
@@ -197,5 +222,70 @@ const SearchContainer = styled.div<ISearchContainer>`
   }
   @media (max-width: 450px) {
     display: none;
+  }
+`;
+
+interface INavBarSmallScreen {
+  isMenuOpen: boolean;
+}
+
+const NavBarSmallScreen = styled.div<INavBarSmallScreen>`
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  position: sticky;
+  width: 90%;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-5%);
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  z-index: 2;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease-in-out;
+  ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border-radius: 5rem;
+      cursor: pointer;
+      height: 40px;
+      width: 40px;
+      transition: all 0.3s ease-in-out;
+
+      svg {
+        font-size: 1.2rem;
+      }
+    }
+  }
+  .toogle-theme-button {
+    transition: all 0.3s ease-in-out;
+  }
+  ${({ theme, isMenuOpen }) => css`
+    height: ${isMenuOpen ? "60px" : "0px"};
+    background: ${theme.colors.primary_90};
+    ul {
+      li {
+        transform: ${isMenuOpen ? "scale(100%)" : "scale(0)"};
+
+        background: ${theme.colors.primary_90};
+        svg {
+          color: ${theme.colors.primary_25};
+        }
+      }
+    }
+    .toogle-theme-button {
+      transform: ${isMenuOpen ? "scale(100%)" : "scale(0)"};
+    }
+  `}
+  @media (max-width:450px) {
+    display: flex;
   }
 `;
