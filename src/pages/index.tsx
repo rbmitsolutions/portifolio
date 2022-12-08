@@ -20,7 +20,7 @@ export default function Home() {
   // }
 
   // getData();
-  console.log(static_posts);
+  // console.log(static_posts);
   const { title } = useTheme();
   return (
     <Container>
